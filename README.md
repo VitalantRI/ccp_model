@@ -1,5 +1,7 @@
 # COVID-19 Convalescent Plasma Model
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4082755.svg)](https://doi.org/10.5281/zenodo.4082755)
+
 This tool was developed by researchers at Vitalant Research Institute to model COVID-19 Convalescent Plasama collection and distribution to inform policy and operations.
 
 The model has two main components, an agent-based microsimulation used to simulate the donor recruitment and collection process, and a linked production and demand model to project CCP release, distribution and inventory. The model utilizes estimates and projections of COVID-19 patients discharged from hospital supplied by an external epidemic model to create agents that can be recruited as CCP donors. New hospital admissions from the same epidemic model are used to inform the CCP demand model.
