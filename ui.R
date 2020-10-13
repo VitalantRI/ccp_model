@@ -890,6 +890,7 @@ body <- dashboardBody(
                  p("The software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details."),
                  em("The source code can be accessed on ", a("Github", href = "https://github.com/VitalantRI/ccp_model", target="_blank")),
                  br(),
+                 div(a(img(src="https://zenodo.org/badge/303556795.svg"), href = "https://zenodo.org/badge/latestdoi/303556795"), style="text-align: center;"),
                  br(),
                  div(img(src="VRI_logo.png", height = "150px"), style="text-align: center;"),
                  br(),

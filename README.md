@@ -1,6 +1,6 @@
 # COVID-19 Convalescent Plasma Model
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4082755.svg)](https://doi.org/10.5281/zenodo.4082755)
+[![DOI](https://zenodo.org/badge/303556795.svg)](https://zenodo.org/badge/latestdoi/303556795)
 
 This tool was developed by researchers at Vitalant Research Institute to model COVID-19 Convalescent Plasama collection and distribution to inform policy and operations.
 
