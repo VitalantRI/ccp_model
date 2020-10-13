@@ -19,6 +19,7 @@
 
 # RStudio files
 .Rproj.user/
+*.Rproj
 
 # produced vignettes
 vignettes/*.html
@@ -37,3 +38,15 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# Covid Act Now API key
+covidactnow_api_key.txt
+
+# Shinyapps.io deployment files
+rsconnect/
+
+# Python cache
+__pycache__/
+
+# Rendered notebooks
+*.html
