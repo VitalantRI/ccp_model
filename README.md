@@ -2,6 +2,8 @@
 
 [![DOI](https://zenodo.org/badge/303556795.svg)](https://zenodo.org/badge/latestdoi/303556795)
 
+**Use a hosted version of this modeling tool at  [https://vitalantri.shinyapps.io/ccp_model/](https://vitalantri.shinyapps.io/ccp_model/).**
+
 This tool was developed by researchers at Vitalant Research Institute to model COVID-19 Convalescent Plasama collection and distribution to inform policy and operations.
 
 The model has two main components, an agent-based microsimulation used to simulate the donor recruitment and collection process, and a linked production and demand model to project CCP release, distribution and inventory. The model utilizes estimates and projections of COVID-19 patients discharged from hospital supplied by an external epidemic model to create agents that can be recruited as CCP donors. New hospital admissions from the same epidemic model are used to inform the CCP demand model.
