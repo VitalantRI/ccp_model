@@ -67,6 +67,8 @@ shinyServer(function(input, output, session) {
   scenarios <<- list()
   
   observe({
+    if (input$epidemic_est_type != "file") {
+    
     if (input$epidemic_est_type == "covidactnow") {
       maxdate <- lubridate::today() + lubridate::days(89)
     }
@@ -74,37 +76,57 @@ shinyServer(function(input, output, session) {
       maxdate <- lubridate::as_date(read_epi_maxdate(region = input$region)) - lubridate::days(1)
     }
     
-    if (input$sim_dates[2] > maxdate) {
-      updateDateRangeInput(session, "sim_dates",
-                           label = "Simulation period",
-                           start = input$sim_dates[1],
-                           end = maxdate,
-                           min = lubridate::ymd("2020-02-01"),
-                           max = maxdate
-      )
-    } else {
+      if (input$sim_dates[2] > maxdate) {
+        updateDateRangeInput(session, "sim_dates",
+                             label = "Simulation period",
+                             start = input$sim_dates[1],
+                             end = maxdate,
+                             min = lubridate::ymd("2020-02-01"),
+                             max = maxdate
+        )
+      } else {
+        updateDateRangeInput(session, "sim_dates",
+                             label = "Simulation period",
+                             start = input$sim_dates[1],
+                             end = input$sim_dates[2],
+                             min = lubridate::ymd("2020-02-01"),
+                             max = maxdate
+        )
+      }
+    } else if (input$epidemic_est_type == "file") {
       updateDateRangeInput(session, "sim_dates",
                            label = "Simulation period",
                            start = input$sim_dates[1],
                            end = input$sim_dates[2],
                            min = lubridate::ymd("2020-02-01"),
-                           max = maxdate
+                           max = lubridate::ymd("2021-12-31")
       )
     }
-    
-    
+  })
+  
+  observe({
+    updateDateInput(session, "recruitment_start_date",
+                    min = input$sim_dates[1],
+                    max = input$sim_dates[2])
+  })
+  
+  observe({
+    updateDateInput(session, "collection_start_date",
+                    min = input$recruitment_start_date,
+                    max = input$sim_dates[2])
   })
   
   read_epi_file <- reactive({
     req(input$epidemic_est_input_file)
     epidata <- readr::read_csv(input$epidemic_est_input_file$datapath)
-    n_steps <- length(seq(input$sim_dates[1], input$sim_dates[2], by = "days"))
     validate(
-      need(nrow(epidata) >= n_steps, "Epidemic estimates file must contain all dates in simulation."),
-      need(min(epidata$date) <= input$sim_dates[1], "Epidemic estimates file must contain all dates in simulation."),
-      need(max(epidata$date) >= input$sim_dates[2], "Epidemic estimates file must contain all dates in simulation.")
+      need("date" %in% colnames(epidata), "File must contain column 'date'"),
+      need("discharges" %in% colnames(epidata), "File must contain column 'discharges'"),
+      need("admissions" %in% colnames(epidata), "File must contain column 'admissions'"),
+      need("icu_admissions" %in% colnames(epidata), "File must contain column 'icu_admissions'")
     )
     epidata %>%
+      mutate(date = lubridate::as_date(date)) %>%
       filter(date >= input$sim_dates[1], date <= input$sim_dates[2]) %>%
       mutate(t = seq(from = 0, to = nrow(.)-1, by = 1)) %>%
       select(date, t, discharges, admissions, icu_admissions) %>%
