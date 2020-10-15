@@ -566,8 +566,7 @@ body <- dashboardBody(
                    em("Epidemic estimates are sourced from the "),
                    a("Institute for Health Metrics and Evaluation", href="http://www.healthdata.org", target="_blank"),
                    em("at the University of Washington and are reproduced under the terms of the "),
-                   a("Creative Commons Attribution-NonCommercial 4.0 International License.", href="https://creativecommons.org/licenses/by-nc/4.0/", target="_blank"),
-                   
+                   a("Creative Commons Attribution-NonCommercial 4.0 International License.", href="https://creativecommons.org/licenses/by-nc/4.0/", target="_blank")
                  ),
                  conditionalPanel(
                    condition = "input.epidemic_est_type == 'file'",
@@ -891,8 +890,6 @@ body <- dashboardBody(
                  em("The source code can be accessed on ", a("Github", href = "https://github.com/VitalantRI/ccp_model", target="_blank"), " or on Zenodo using the following persistent DOI:"),
                  br(),
                  a(img(src="https://zenodo.org/badge/303556795.svg"), href = "https://zenodo.org/badge/latestdoi/303556795"),
-                 # br(),
-                 # div(a(img(src="https://zenodo.org/badge/303556795.svg"), href = "https://zenodo.org/badge/latestdoi/303556795"), style="text-align: center;"),
                  br(),br(),
                  div(img(src="VRI_logo.png", height = "150px"), style="text-align: center;"),
                  br(),

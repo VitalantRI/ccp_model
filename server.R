@@ -66,54 +66,59 @@ shinyServer(function(input, output, session) {
   
   scenarios <<- list()
   
+  #counter <<- 0
+  
   observe({
-    if (input$epidemic_est_type != "file") {
-    
+    #counter <<- counter + 1
+    #print(counter)
     if (input$epidemic_est_type == "covidactnow") {
       maxdate <- lubridate::today() + lubridate::days(89)
-    }
-    if (input$epidemic_est_type == "ihme") {
+    } else if (input$epidemic_est_type == "ihme") {
       maxdate <- lubridate::as_date(read_epi_maxdate(region = input$region)) - lubridate::days(1)
-    }
-    
-      if (input$sim_dates[2] > maxdate) {
-        updateDateRangeInput(session, "sim_dates",
-                             label = "Simulation period",
-                             start = input$sim_dates[1],
-                             end = maxdate,
-                             min = lubridate::ymd("2020-02-01"),
-                             max = maxdate
-        )
-      } else {
-        updateDateRangeInput(session, "sim_dates",
-                             label = "Simulation period",
-                             start = input$sim_dates[1],
-                             end = input$sim_dates[2],
-                             min = lubridate::ymd("2020-02-01"),
-                             max = maxdate
-        )
-      }
     } else if (input$epidemic_est_type == "file") {
-      updateDateRangeInput(session, "sim_dates",
-                           label = "Simulation period",
-                           start = input$sim_dates[1],
-                           end = input$sim_dates[2],
-                           min = lubridate::ymd("2020-02-01"),
-                           max = lubridate::ymd("2021-12-31")
-      )
+      maxdate <- lubridate::ymd("2021-12-31")
     }
-  })
-  
-  observe({
+    if (input$sim_dates[2] <= maxdate) {
+      new_end <- input$sim_dates[2]
+    } else if (input$sim_dates[2] > maxdate) {
+      new_end <- maxdate
+    }
+    updateDateRangeInput(session, "sim_dates",
+                         label = "Simulation period",
+                         end = new_end,
+                         min = lubridate::ymd("2020-02-01"),
+                         max = maxdate
+    )
+    
+    
+    # FOR SOME REASON THIS DOES NOT WORK LIKE THE UPDATE ABOVE
+    # THE input$recruitment_start_date VARIABLE GETS LENGTH OF ZERO MAKING THE
+    # CHECKS FALL OVER
+    min_recruit <- input$sim_dates[1]
+    max_recruit <- input$sim_dates[2]
+    # if (input$recruitment_start_date >= min_recruit & input$recruitment_start_date <= max_recruit) {
+    #   new_recruit <- input$recruitment_start_date
+    # } else if (input$recruitment_start_date < min_recruit) {
+    #   new_recruit <- min_recruit
+    # } else if (input$recruitment_start_date > max_recruit) {
+    #   new_recruit <- max_recruit
+    # }
     updateDateInput(session, "recruitment_start_date",
-                    min = input$sim_dates[1],
-                    max = input$sim_dates[2])
-  })
-  
-  observe({
+                    label = "CCP donor recruitment start:",
+    #                value = new_recruit,
+                    min = min_recruit,
+                    max = max_recruit
+    )
+    
+    min_collect <- input$recruitment_start_date
+    max_collect <- input$sim_dates[2]
     updateDateInput(session, "collection_start_date",
-                    min = input$recruitment_start_date,
-                    max = input$sim_dates[2])
+                    label = "CCP collection start:", 
+                    #                value = new_recruit,
+                    min = min_collect,
+                    max = max_collect
+    )
+    
   })
   
   read_epi_file <- reactive({
@@ -267,7 +272,7 @@ shinyServer(function(input, output, session) {
         bind_rows(
           epidata %>%
             mutate(t = seq(from = length(dates), to = nrow(.)+length(dates)-1, by = 1))
-          ) %>%
+        ) %>%
         arrange(date) -> epidata
     }
     
