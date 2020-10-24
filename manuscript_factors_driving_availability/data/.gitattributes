@@ -1,0 +1,14 @@
+covidactnow_MD_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_CA_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_LA_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_NJ_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_NY_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+donor_return_2nd_cumprob.feather filter=lfs diff=lfs merge=lfs -text
+donor_return_3rd_cumprob.feather filter=lfs diff=lfs merge=lfs -text
+donor_return_4th_cumprob.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_CT_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_IN_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_MS_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_IL_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_MA_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
+covidactnow_VA_2020-09-08.feather filter=lfs diff=lfs merge=lfs -text
