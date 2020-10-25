@@ -146,7 +146,7 @@ ggplot() +
   theme_void()+
   theme(legend.position="none")+
   scale_x_continuous(limits=c(15, 200))
-ggsave("figs/epi_trajectories_CA_MD_MS_NY.png",
+ggsave("figs/epi_trajectories_CA_MD_MS_NY.pdf",
        width = 4.7, height = 1, units = "in")
 # 2020-09-07
 # report <- fread("G:/My Drive/Blood Transfusion/ccpmodelling_localonly/concat_report_2020_09_07.csv")
@@ -256,7 +256,7 @@ ggplot() +
   scale_y_continuous(labels = function(x) paste0(x*100,"%"))+
   scale_x_continuous(breaks = seq(15, 200, 37), limits = c(15, 200))
 
-ggsave("figs/capac_used_by_state_quantiles.png",
+ggsave("figs/capac_used_by_state_quantiles.pdf",
        width = 8.5, height = 4, units = "in")
 # DEMAND MET PERCENT QUANTILE PLOT
 
@@ -295,7 +295,7 @@ ggplot() +
   scale_y_continuous(labels = function(x) paste0(x*100,"%")) +
   scale_x_continuous(breaks = seq(15, 200, 37), limits = c(15, 200))
 
-ggsave("figs/demand_unmet_by_state_quantiles.png",
+ggsave("figs/demand_unmet_by_state_quantiles.pdf",
        width = 8.5, height = 4, units = "in")
 
 
@@ -311,7 +311,7 @@ ggplot(dt_outcomes)+
   ylab("Total percent demand unmet")+
   xlab("State")
 
-ggsave("figs/demand_unmet_by_state_boxplot.png",
+ggsave("figs/demand_unmet_by_state_boxplot.pdf",
        width = 6, height = 6, units = "in")
 
 
@@ -348,7 +348,7 @@ ggplot() +
   scale_y_continuous(labels = function(x) paste0(x*100,"%")) +
   scale_x_continuous(breaks = seq(15, 200, 37), limits = c(15, 200))
 
-ggsave("figs/demand_met_by_state_quantiles.png",
+ggsave("figs/demand_met_by_state_quantiles.pdf",
        width = 9, height = 4.2, units = "in")
 
 # Unmet demand in units
@@ -388,7 +388,7 @@ ggplot() +
   scale_x_continuous(breaks = seq(15, 200, 37), limits = c(15, 200))
 
 
-ggsave("figs/demand_unmet_units_by_state_quantiles.png",
+ggsave("figs/demand_unmet_units_by_state_quantiles.pdf",
        width = 9, height = 4.2, units = "in")
 
 
@@ -431,8 +431,8 @@ ggplot() +
   scale_y_continuous(labels = function(x) paste0(x*100,"%"))+
   scale_x_continuous(breaks = seq(15, 200, 37), limits = c(15, 200))
 
-ggsave("figs/donors_unavail_by_state_quantiles.png",
-       width = 9, height = 4.2, units = "in")
+ggsave("figs/donors_unavail_by_state_quantiles.pdf",
+       width = 8.8, height = 4.2, units = "in")
 
 
 ## HEAT MAP STYLE CAPACITY
@@ -471,7 +471,7 @@ ggplot()+
   ylab("% capacity utilized")+
   xlab("Days from first discharge")
 
-ggsave("figs/capac_used_by_state_heatmap.png",
+ggsave("figs/capac_used_by_state_heatmap.pdf",
        width = 9, height = 4.2, units = "in")
 
 ## HEAT MAP STYLE DEMAND MET
@@ -510,7 +510,7 @@ ggplot()+
   ylab("% demand met")+
   xlab("Days from first discharge")
 
-ggsave("figs/demand_met_by_state_heatmap.png",
+ggsave("figs/demand_met_by_state_heatmap.pdf",
        width = 9, height = 4.2, units = "in")
 
 ## HEAT MAP STYLE DEMAND UNMET
@@ -549,7 +549,7 @@ ggplot()+
   ylab("% demand unmet")+
   xlab("Days from first discharge")
 
-ggsave("figs/demand_unmet_by_state_heatmap.png",
+ggsave("figs/demand_unmet_by_state_heatmap.pdf",
        width = 9, height = 4.2, units = "in")
 ##
 #
@@ -703,7 +703,7 @@ dt_sensitivity_melt <- melt(dt_sensitivity,
 #                             #limits = c(0,.8),
 #                             minor_breaks = NULL)+
 #          theme(strip.text.x = element_text(size = 8)),
-#        filename = "demand_loess_regression_all_param.png",
+#        filename = "demand_loess_regression_all_param.pdf",
 #        width = 9.7, height = 7.5, units = "in")
 
 # ggsave(plot = ggplot(data=dt_sensitivity_melt[param %in% capac.params])+
@@ -715,7 +715,7 @@ dt_sensitivity_melt <- melt(dt_sensitivity,
 #                             expand = c(0, 0),
 #                             #limits = c(0,.8),
 #                             minor_breaks = NULL),
-#        filename = "capac_loess_regression_all_param.png",
+#        filename = "capac_loess_regression_all_param.pdf",
 #        width = 9.5, height = 7.5, units = "in")
 
 # ggplot(data=dt_sensitivity_melt[state=="NY" & param %in% demand.params & param == "CCP_prob_needed"])+
@@ -764,6 +764,14 @@ param_lookup <- data.table(
                            "Delay from admit to CCP (1 to 5)",
                            "CCP units per patient (1.5 to 4)"
                            )),
+  parameter_full_linebreak = factor(c("Prob. willing to donate\n(10% - 90%)",
+                                      "Max. donors recruited\nper machine per day (0.2 - 2.0)",
+                                      "Machines per million\npopulation (4 - 55)",
+                                      "Donor return multiplier\n(0.5 - 2.25)",
+                                      "Prob. patient requires CCP\n(10% - 45%)",
+                                      "Delay from admit to CCP\n(1 to 5)",
+                                      "CCP units per patient\n(1.5 to 4)"
+  )),
   category = c("Donors",
                "Donors",
                "Capacity",
@@ -776,17 +784,19 @@ param_lookup <- data.table(
 dt_univariate[ , Quantile := factor(paste0(quantile*100,"%"))]
 dt_univariate<-dt_univariate[param_lookup, on="param"]
 
-dt_univariate_wide <- dcast(dt_univariate, state + outcome + param + parameter_full + category ~ paste0("q",quantile), value.var="quantile.val")
+dt_univariate_wide <- dcast(dt_univariate, 
+                            state + outcome + param + parameter_full + parameter_full_linebreak + category ~ paste0("q",quantile), 
+                            value.var="quantile.val")
 
 psa_states <- c("NY", "CA", "MD", "MS")
 
 #DEMAND
 ggplot()+
   geom_segment(data=dt_univariate_wide[outcome=="perc_demand_unmet" & state %in% psa_states],
-               aes(x=parameter_full, xend=parameter_full, y=q0.01, yend=q0.99), 
+               aes(x=parameter_full_linebreak, xend=parameter_full_linebreak, y=q0.01, yend=q0.99), 
                size=2, color = "grey")+
   geom_point(data=dt_univariate[outcome=="perc_demand_unmet" & state %in% psa_states],
-             aes(x=parameter_full, y=quantile.val, color=Quantile),
+             aes(x=parameter_full_linebreak, y=quantile.val, color=Quantile),
              size = 4)+
   facet_grid(cols = vars(state), rows = vars(category),
              scales = "free_y", space = "free_y")+
@@ -800,16 +810,16 @@ ggplot()+
   xlab("")
 
 
-ggsave("figs/univariate_sensitivity_demand.png",
-       width = 9, height = 4, units = "in")
+ggsave("figs/univariate_sensitivity_demand.pdf",
+       width = 7, height = 5, units = "in")
 
 
-plt_demand_supp1 <- ggplot()+
-  geom_segment(data=dt_univariate_wide[outcome=="perc_demand_unmet" & state %in% c("CT", "IL", "IN", "LA")],
-               aes(x=parameter_full, xend=parameter_full, y=q0.01, yend=q0.99), 
+plt_demand_supp <- ggplot()+
+  geom_segment(data=dt_univariate_wide[outcome=="perc_demand_unmet" & !(state %in% psa_states)],
+               aes(x=parameter_full_linebreak, xend=parameter_full_linebreak, y=q0.01, yend=q0.99), 
                size=2, color = "grey")+
-  geom_point(data=dt_univariate[outcome=="perc_demand_unmet" & state %in% c("CT", "IL", "IN", "LA")],
-             aes(x=parameter_full, y=quantile.val, color=Quantile),
+  geom_point(data=dt_univariate[outcome=="perc_demand_unmet" & !(state %in% psa_states)],
+             aes(x=parameter_full_linebreak, y=quantile.val, color=Quantile),
              size = 4)+
   facet_grid(cols = vars(state), rows = vars(category),
              scales = "free_y", space = "free_y")+
@@ -821,32 +831,14 @@ plt_demand_supp1 <- ggplot()+
                      breaks = c(.1, .3, .5),
                      minor_breaks = NULL)+
   ylab("Total % demand unmet")+
-  xlab("")
-
-plt_demand_supp2 <- ggplot()+
-  geom_segment(data=dt_univariate_wide[outcome=="perc_demand_unmet" & state %in% c("MA", "NJ", "VA")],
-               aes(x=parameter_full, xend=parameter_full, y=q0.01, yend=q0.99), 
-               size=2, color = "grey")+
-  geom_point(data=dt_univariate[outcome=="perc_demand_unmet" & state %in% c("MA", "NJ", "VA")],
-             aes(x=parameter_full, y=quantile.val, color=Quantile),
-             size = 4)+
-  facet_grid(cols = vars(state), rows = vars(category),
-             scales = "free_y", space = "free_y")+
-  coord_flip()+
-  scale_color_manual(values = c('#a6611a', '#dfc27d', '#f5f5f5', '#80cdc1', '#018571'))+
-  scale_y_continuous(labels = function(x) paste0(x*100,"%"),
-                     expand = c(0, 0),
-                     breaks = c(.2, .4, .6),
-                     #limits = c(0,.7),
-                     minor_breaks = NULL)+
-  ylab("Total % demand unmet")+
-  xlab("")
+  xlab("")+
+  theme(legend.position = "bottom")
 
 
 
-ggsave("figs/univariate_sensitivity_demand_supp.png",
-       grid.arrange(plt_demand_supp1, plt_demand_supp2, ncol = 1),
-       width = 9, height = 8, units = "in")
+ggsave("figs/univariate_sensitivity_demand_supp.pdf",
+       plt_demand_supp,
+       width = 8.8, height = 5, units = "in")
 
 
 #CAPACITY
@@ -870,7 +862,7 @@ ggplot()+
   xlab("")
 
 
-ggsave("figs/univariate_sensitivity_capacity.png",
+ggsave("figs/univariate_sensitivity_capacity.pdf",
        width = 9, height = 4, units = "in")
 
 ggplot()+
@@ -893,7 +885,7 @@ ggplot()+
   xlab("")
 
 
-ggsave("figs/univariate_sensitivity_capacity_supp.png",
+ggsave("figs/univariate_sensitivity_capacity_supp.pdf",
        width = 9, height = 4, units = "in")
 
 
@@ -929,15 +921,15 @@ dt_twoway <- expand.grid(
 )
 
 
-ggplot()+
-  facet_wrap(vars(state))+
-  geom_point(data = dt_twoway, aes(x = recruitment_pm, y = perc_demand_unmet, color = donor_return_second_scale), alpha = 0.3)
-
-ggplot(data = dt_sensitivity_melt[param == "recruitment_pm"],
-       aes(x = param.value, y = perc_demand_unmet))+
-  geom_point(size =0.5, alpha = 0.5)+
-  geom_smooth(method = "loess")+
-  facet_wrap(vars(state))
+# ggplot()+
+#   facet_wrap(vars(state))+
+#   geom_point(data = dt_twoway, aes(x = recruitment_pm, y = perc_demand_unmet, color = donor_return_second_scale), alpha = 0.3)
+# 
+# ggplot(data = dt_sensitivity_melt[param == "recruitment_pm"],
+#        aes(x = param.value, y = perc_demand_unmet))+
+#   geom_point(size =0.5, alpha = 0.5)+
+#   geom_smooth(method = "loess")+
+#   facet_wrap(vars(state))
 
 for (i in 1:nrow(dt_twoway)){
   dt_twoway[i, "perc_demand_unmet"] <- predict(two_way_loess[[dt_twoway[i,]$state ]],
@@ -966,7 +958,7 @@ ggplot()+
   ylab("Donor return (scale factor)")+
   xlab("Donor recruitment (max donors per day per machine)")
 
-ggsave("figs/two_way_donor_sensitivity_demand.png",
+ggsave("figs/two_way_donor_sensitivity_demand.pdf",
        width = 9, height = 4, units = "in")
 
 ggplot()+
@@ -985,7 +977,7 @@ ggplot()+
   ylab("Donor return (scale factor)")+
   xlab("Donor recruitment (max donors per day per machine)")
 
-ggsave("figs/two_way_donor_sensitivity_demand_gradient.png",
+ggsave("figs/two_way_donor_sensitivity_demand_gradient.pdf",
        width = 9, height = 4, units = "in")
 
 
@@ -1034,7 +1026,7 @@ ggplot()+
   ylab("Donor return (scale factor)")+
   xlab("Donor recruitment (max donors per day per machine)")
 
-ggsave("figs/two_way_donor_sensitivity_capacity.png",
+ggsave("figs/two_way_donor_sensitivity_capacity.pdf",
        width = 9, height = 4, units = "in")
 
 
@@ -1058,5 +1050,5 @@ ggplot()+
   ylab("Donor return (scale factor)")+
   xlab("Donor recruitment (max donors per day per machine)")
 
-ggsave("figs/two_way_donor_sensitivity_capacity_gradient.png",
+ggsave("figs/two_way_donor_sensitivity_capacity_gradient.pdf",
        width = 9, height = 4, units = "in")
