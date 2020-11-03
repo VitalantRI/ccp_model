@@ -2,7 +2,7 @@ library(tidyverse)
 library(lubridate)
 library(arrow)
 
-hospitaldata <- read_csv("Reference_hospitalization_all_locs.csv.zip")
+hospitaldata <- read_csv("reference_hospitalization_all_locs.csv.zip")
 
 hospitaldata %>%
   mutate(
