@@ -877,6 +877,13 @@ body <- dashboardBody(
                     " and ",
                     a("Scipy", href = "https://www.scipy.org", target="_blank"),
                     " Python packages."),
+                 h3("More details"),
+                 p("More details on the model can be found in the following articles:"),
+                 tags$ul(
+                   tags$li("Russell WA, Grebe E, Custer B. Factors driving availability of COVID-19 convalescent plasma: Insights from a demand, production and supply model. medRxiv 2020.10.25.20219170. doi:", a("10.1101/2020.10.25.20219170", href = "https://doi.org/10.1101/2020.10.25.20219170")),
+                   #, a("10.1101/2020.10.25.20219170", href = "https://doi.org/10.1101/2020.10.25.20219170"
+                   tags$li("Grebe E, Russell WA, Custer B. Forecasting COVID-19 convalescent plasma supply and demand: A microsimulation model and web-based modeling tool. Forthcoming.")
+                 ),
                  h3("Epidemic estimates"),
                  p("Epidemic estimates are sourced from the ", 
                    a("Institute for Health Metrics and Evaluation", href="http://www.healthdata.org", target="_blank"), 
