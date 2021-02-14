@@ -2,6 +2,9 @@ library(tidyverse)
 library(lubridate)
 library(arrow)
 
+# Change as applicable
+setwd("~/dev/ccp_model/data/")
+
 hospitaldata <- read_csv("reference_hospitalization_all_locs.csv.zip")
 
 hospitaldata %>%
