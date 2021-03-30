@@ -63,11 +63,11 @@ source("production_model.R")
 #import::from(foreach, "%dopar%")
 
 shinyServer(function(input, output, session) {
-  
+
   scenarios <<- list()
-  
+
   #counter <<- 0
-  
+
   observe({
     #counter <<- counter + 1
     #print(counter)
@@ -89,8 +89,8 @@ shinyServer(function(input, output, session) {
                          min = lubridate::ymd("2020-02-01"),
                          max = maxdate
     )
-    
-    
+
+
     # FOR SOME REASON THIS DOES NOT WORK LIKE THE UPDATE ABOVE
     # THE input$recruitment_start_date VARIABLE GETS LENGTH OF ZERO MAKING THE
     # CHECKS FALL OVER
@@ -109,18 +109,18 @@ shinyServer(function(input, output, session) {
                     min = min_recruit,
                     max = max_recruit
     )
-    
+
     min_collect <- input$recruitment_start_date
     max_collect <- input$sim_dates[2]
     updateDateInput(session, "collection_start_date",
-                    label = "CCP collection start:", 
+                    label = "CCP collection start:",
                     #                value = new_recruit,
                     min = min_collect,
                     max = max_collect
     )
-    
+
   })
-  
+
   read_epi_file <- reactive({
     req(input$epidemic_est_input_file)
     epidata <- readr::read_csv(input$epidemic_est_input_file$datapath)
@@ -137,7 +137,7 @@ shinyServer(function(input, output, session) {
       select(date, t, discharges, admissions, icu_admissions) %>%
       return()
   })
-  
+
   read_historical_collections_file <- reactive({
     req(input$historical_collections_file)
     readr::read_csv(input$historical_collections_file$datapath) %>%
@@ -145,11 +145,11 @@ shinyServer(function(input, output, session) {
       filter(date >= input$sim_dates[1], date <= input$sim_dates[2]) -> historical_collections
     dates <- seq(input$sim_dates[1], input$sim_dates[2], by = "days")
     collection_start_time <- match(input$collection_start_date, dates)-1
-    
+
     validate(
       need(min(historical_collections$date) == input$collection_start_date, "Collection data file must start on collection start date.")
     )
-    
+
     tibble::tibble(
       date = seq(min(historical_collections$date), max(historical_collections$date), by = "days")
     ) %>%
@@ -168,32 +168,32 @@ shinyServer(function(input, output, session) {
       ) %>%
       return()
   })
-  
+
   read_historical_collections <- reactive({
     if (input$historical_collections == "upload") {
       read_historical_collections_file() %>%
         return()
     }
   })
-  
+
   extract_collections <- reactive({
     read_historical_collections() %>%
       pull(collections) %>%
       return()
   })
-  
+
   extract_units <- reactive({
     read_historical_collections() %>%
       pull(units) %>%
       return()
   })
-  
+
   extract_ma <- reactive({
     read_historical_collections() %>%
       pull(ma_collections) %>%
       return()
   })
-  
+
   read_epi_can <- reactive({
     if (input$can_recovered_type == "discharged" & !(input$compute_prop_hospitalized)) {
       read_epi_can_fordates(
@@ -219,7 +219,7 @@ shinyServer(function(input, output, session) {
         return()
     }
   })
-  
+
   read_epi_ihme <- reactive({
     # temporary workaround, remove column selection option for discharges
     read_epi_ihme_fordates(
@@ -235,7 +235,7 @@ shinyServer(function(input, output, session) {
       ) %>%
       return()
   })
-  
+
   load_epidata <- reactive({
     if (input$epidemic_est_type == "file") {
       epidata <- read_epi_file()
@@ -244,10 +244,10 @@ shinyServer(function(input, output, session) {
     } else if (input$epidemic_est_type == "covidactnow") {
       showModal(modalDialog(
         title = "Covid Act Now projections",
-        "The Covid Act Now project has deprecated the API providing access to 
-        epidemic projections in the form needed by this tool. We are attempring 
-        to arrange access to the relevant estimates and hope to re-enable the 
-        use of Covid Act Now epidemic estimates in the near future. Please 
+        "The Covid Act Now project has deprecated the API providing access to
+        epidemic projections in the form needed by this tool. We are attempring
+        to arrange access to the relevant estimates and hope to re-enable the
+        use of Covid Act Now epidemic estimates in the near future. Please
         select 'IHME model' or 'Upload estimates'.",
         easyClose = FALSE
       ))
@@ -275,7 +275,7 @@ shinyServer(function(input, output, session) {
         ) %>%
         arrange(date) -> epidata
     }
-    
+
     if (max(epidata$date) < input$sim_dates[2]) {
       dates <- seq(max(epidata$date)+lubridate::ddays(1), input$sim_dates[2], by = "days")
       t0 <- max(epidata$t)+1
@@ -291,80 +291,80 @@ shinyServer(function(input, output, session) {
     }
     return(epidata)
   })
-  
+
   simulate_collections <- reactive({
     return(NULL)
   })
-  
+
   output$epidata_table <- renderTable({
     load_epidata() %>%
       mutate(date = as.character(date)) %>%
       select(date, recoveries = discharges, admissions, icu_admissions) %>%
       return()
   })
-  
+
   output$discharges_plot <- renderPlot({
     load_epidata() %>%
       pivot_longer(discharges, names_to = "type", values_to = "n") %>%
       filter(type == "discharges") %>%
       ggplot(aes(x = date, y = n, colour = type)) +
-      geom_line() + 
+      geom_line() +
       theme_bw() +
       theme(legend.position = "none") %>%
       return()
   })
-  
+
   output$hosp_admissions_plot <- renderPlot({
     load_epidata() %>%
       pivot_longer(admissions, names_to = "type", values_to = "n") %>%
       filter(type == "admissions") %>%
       ggplot(aes(x = date, y = n, colour = type)) +
-      geom_line() + 
+      geom_line() +
       theme_bw() +
       theme(legend.position = "none") %>%
       return()
   })
-  
+
   output$icu_admissions_plot <- renderPlot({
     load_epidata() %>%
       pivot_longer(icu_admissions, names_to = "type", values_to = "n") %>%
       filter(type == "icu_admissions") %>%
       ggplot(aes(x = date, y = n, colour = type)) +
-      geom_line() + 
+      geom_line() +
       theme_bw() +
       theme(legend.position = "none") %>%
       return()
   })
-  
+
   extract_recovered <- reactive({
     load_epidata() %>%
       pull(discharges) %>%
       return()
   })
-  
+
   extract_hosp_admissions <- reactive({
     load_epidata() %>%
       pull(admissions) %>%
       return()
   })
-  
+
   extract_icu_admissions <- reactive({
     load_epidata() %>%
       pull(icu_admissions) %>%
       return()
   })
-  
+
   compute_collection_capacity <- reactive({
     # Should we account for the actual lengths of the months in the simulation?
     average_days_per_month <- 30.42
-    
+
     # SIMPLIFIED CALCULATION BASED ON TURNS/DAY
     total_procedures_pm_fixed <- input$n_fixed * input$turns_per_day_fixed * input$staffed_days_pm_fixed
     total_procedures_pm_mobile <- input$n_mobile * input$turns_per_day_mobile * input$staffed_days_pm_mobile
-    
+
     available_procedures_pm <- (input$perc_machine_time_fixed/100)*total_procedures_pm_fixed + (input$perc_machine_time_mobile/100)*total_procedures_pm_mobile
     available_procedures_pd <- available_procedures_pm/average_days_per_month
-    
+
     # We are expecting users to capture realistic capacity using the capacity parameters
     if (input$constrain_collections == "no") {
       expected_collections_pd <- floor(available_procedures_pd)
@@ -376,18 +376,18 @@ shinyServer(function(input, output, session) {
     } else { # Handle inconsistent inputs, e.g. constrain by MA and no historical collections - do not constrain
       expected_collections_pd <- floor(available_procedures_pd)
     }
-    
+
     return(expected_collections_pd)
   })
-  
+
   output$collection_capacity_procedures <- renderText({
     prettyNum(compute_collection_capacity(), big.mark=",")
   })
-  
+
   output$collection_capacity_units <- renderText({
     prettyNum(round(compute_collection_capacity() * input$ccp_units_per_collection), big.mark=",")
   })
-  
+
   observeEvent(input$return_info, {
     showModal(modalDialog(
       title = "Donor return time distributions",
@@ -400,7 +400,7 @@ shinyServer(function(input, output, session) {
       easyClose = TRUE
     ))
   })
-  
+
   observeEvent(input$view_returndists, {
     showModal(modalDialog(
       title = "Donor return time distributions",
@@ -408,7 +408,7 @@ shinyServer(function(input, output, session) {
       easyClose = TRUE
     ))
   })
-  
+
   output$returndist_plot <- renderPlot({
     dists <- compute_returndists()
     dists[[1]] %>%
@@ -426,7 +426,7 @@ shinyServer(function(input, output, session) {
       scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.2)) +
       scale_x_continuous(breaks = seq(0,120,20)) +
       xlab("Days") + ylab("Cumulative prrobability of return") +
-      facet_wrap(vars(factor(return, 
+      facet_wrap(vars(factor(return,
                              levels = c("Return for 2nd donation",
                                         "Return for 3rd donation",
                                         "Return for 4th+ donations"
@@ -434,7 +434,7 @@ shinyServer(function(input, output, session) {
       theme_bw() %>%
       return()
   })
-  
+
   compute_returndists <- reactive({
     if (input$customize_returndist) {
       K_2nd = input$K_2nd
@@ -451,7 +451,7 @@ shinyServer(function(input, output, session) {
       K_4th =  0.8077
       lambda_4th = 0.05034
     }
-    
+
     donret_2_dist <- tibble(
       time = c(seq(0,130,1), 9999),
       prob = c(exp_model_func(t = seq(0,130,1), K = K_2nd, lambd = lambda_2nd, scale = input$scaling_factor_2nd, t0 = input$period_temp_ineligible), 1.0),
@@ -469,7 +469,7 @@ shinyServer(function(input, output, session) {
     )
     return(list(donret_2_dist, donret_3_dist, donret_4_dist))
   })
-  
+
   simulate_collection <- reactive({
     dates <- seq(input$sim_dates[1], input$sim_dates[2], by = "days")
     collection_start_time <- match(input$collection_start_date, dates)-1 # correct 1-indexing of R
@@ -477,19 +477,19 @@ shinyServer(function(input, output, session) {
     n_steps <- length(dates)
     recovered <- extract_recovered()
     capacity <- rep(compute_collection_capacity(), n_steps)
-    
+
     if (input$historical_collections == "sim_all") {
       historical_collections <- NULL
     } else {
       historical_collections <- extract_collections()
     }
-    
+
     donret_2_dist = compute_returndists()[[1]]
     donret_3_dist = compute_returndists()[[2]]
     donret_4_dist = compute_returndists()[[3]]
-    
+
     scale_factor <- input$sim_reduced_perc/100
-    
+
     parameters <- list(
       run_id = 1,
       iterations = as.integer(n_steps),
@@ -528,7 +528,7 @@ shinyServer(function(input, output, session) {
       collection_start = collection_start_time,
       n_sims = as.integer(input$n_simulations)
     )
-    
+
     if (input$n_simulations == 1) {
       parameters <- reticulate::dict(parameters)
       withProgress(message = 'Running collection simulation', value = 0, {
@@ -536,7 +536,7 @@ shinyServer(function(input, output, session) {
           function(value) {
             incProgress(value)
           })
-        
+
         start <- Sys.time()
         sim <- run_simulation(parameters,
                               seed = as.integer(6570),
@@ -586,14 +586,14 @@ shinyServer(function(input, output, session) {
         return()
     }
   })
-  
+
   output$collection_sim_table <- renderTable({
     simulate_collection() %>%
       mutate(date = as.character(date)) %>% #
       select(date, t, donors, active_donors, collections, units) %>%
       return()
   })
-  
+
   output$collection_sim_plot <- renderPlot({
     sim <- simulate_collection()
     ymax <- ifelse(input$scale_collection_plot_donors, max(sim$donors), max(sim$active_donors))
@@ -602,7 +602,7 @@ shinyServer(function(input, output, session) {
         select(t, date, donors, eligible_donors, active_donors, unavailable, deferred, disqualified, collections, units) %>%
         pivot_longer(donors:units, names_to = "Compartment", values_to = "value") %>%
         mutate(Compartment = factor(Compartment, levels = c("donors","eligible_donors","active_donors", "unavailable", "deferred", "disqualified", "collections","units"))) %>%
-        ggplot(aes(x = date, y = value, colour = Compartment)) + 
+        ggplot(aes(x = date, y = value, colour = Compartment)) +
         geom_vline(xintercept = input$recruitment_start_date, linetype = 2) +
         geom_vline(xintercept = input$collection_start_date, linetype = 2) +
         geom_smooth(se=FALSE, size=1, span=0.1) +
@@ -615,7 +615,7 @@ shinyServer(function(input, output, session) {
         select(t, date, donors, eligible_donors, active_donors, unavailable, deferred, disqualified, collections, units) %>%
         pivot_longer(donors:units, names_to = "Compartment", values_to = "value") %>%
         mutate(Compartment = factor(Compartment, levels = c("donors","eligible_donors","active_donors", "unavailable", "deferred", "disqualified", "collections","units"))) %>%
-        ggplot(aes(x = date, y = value, colour = Compartment)) + 
+        ggplot(aes(x = date, y = value, colour = Compartment)) +
         geom_vline(xintercept = input$recruitment_start_date, linetype = 2) +
         geom_vline(xintercept = input$collection_start_date, linetype = 2) +
         geom_line(size = 1) +
@@ -624,9 +624,9 @@ shinyServer(function(input, output, session) {
         theme(legend.position="bottom", legend.title = element_blank()) %>%
         return()
     }
-    
+
   })
-  
+
   calculate_prop_released <- reactive({
     # Placeholder for production model
     prop_female <- input$perc_female/100
@@ -637,13 +637,13 @@ shinyServer(function(input, output, session) {
     prop_release <- prop_HLA_release*prop_inf_neg*prop_Ab_release
     return(prop_release)
   })
-  
+
   simulate_production <- reactive({
-    
+
     units_by_timestep <- simulate_collection() %>%
       pull(units)
     r <- input$sim_reduced_perc/100
-    
+
     input_production <- list(
       units_by_timstep = units_by_timestep/r,
       admissions = extract_hosp_admissions(),
@@ -659,52 +659,52 @@ shinyServer(function(input, output, session) {
       p_release = 1.0,
       production_lag = input$production_lag
     )
-    
+
     simulate_production_model(input_production) %>%
       return()
   })
-  
+
   output$production_sim_table <- renderTable({
     simulate_production() %>%
       mutate(date = as.character(date)) %>%
       return()
   })
-  
+
   output$production_sim_plot <- renderPlot({
-    plot_production_model(simulate_production(), 
-                          limit_y = input$limit_y, 
-                          smooth_lines = input$smooth_production_plot, 
+    plot_production_model(simulate_production(),
+                          limit_y = input$limit_y,
+                          smooth_lines = input$smooth_production_plot,
                           vars = input$plot_variables)
   })
-  
+
   output$prop_units_released <- renderText({
     paste0(round(calculate_prop_released()*100, 1), "%")
   })
-  
+
   output$n_units_released <- renderText({
     prettyNum(round(compute_collection_capacity() * input$ccp_units_per_collection * calculate_prop_released()), big.mark=",")
   })
-  
+
   output$total_units_released <- renderText({
     prettyNum(sum(simulate_production()$units_released), big.mark=",")
   })
-  
+
   output$total_units_instock <- renderText({
     simulate_production() %>%
       pull(remaining_stock) %>%
       last() %>%
       prettyNum(x=., big.mark=",")
   })
-  
+
   output$n_cores <- renderText({
     paste0(as.integer(ifelse(Sys.info()[['user']] == 'shiny',min(count_cores(),8), count_cores())), " processor cores available.")
   })
-  
+
   observeEvent(input$clear_scenarios, {
     scenarios <<- list()
     output$scenario_plot <- NULL
   })
-  
+
   observeEvent(input$add_scenario, {
     #browser()
     units_by_timestep <- simulate_collection() %>%
@@ -725,7 +725,7 @@ shinyServer(function(input, output, session) {
       p_release = 1.0,
       production_lag = input$production_lag
     )
-    
+
     scenarios %>%
       add_scenario(
         scenario_name = input$scenario_name,
@@ -741,15 +741,15 @@ shinyServer(function(input, output, session) {
         input = input_production,
         start_date = NA #input$scenario_start_date
       ) ->> scenarios
-    
+
     output$scenario_plot <- renderPlot({
-      plot_scenarios(sim = simulate_production(), 
+      plot_scenarios(sim = simulate_production(),
                      scenarios = scenarios,
-                     limit_y = input$limit_y_scenarios, 
-                     smooth_lines = input$smooth_scenario_plot, 
+                     limit_y = input$limit_y_scenarios,
+                     smooth_lines = input$smooth_scenario_plot,
                      vars = input$plot_variables_scenarios)
     })
-    
+
   })
-  
+
 })
