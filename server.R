@@ -1,4 +1,4 @@
-# Copyright 2020 Vitalant and W. Alton Russell
+# Copyright 2020-2021 Vitalant and W. Alton Russell
 # Authors: Eduard Grebe, W. Alton Russell, Brian Custer
 #
 # This program is free software: you can redistribute it and/or modify
