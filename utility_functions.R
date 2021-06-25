@@ -1,4 +1,4 @@
-# Copyright 2020 Vitalant and W. Alton Russell
+# Copyright 2020-2021 Vitalant and W. Alton Russell
 # Authors: Eduard Grebe, W. Alton Russell, Brian Custer
 #
 # This program is free software: you can redistribute it and/or modify
@@ -47,19 +47,19 @@ read_epi_can_fordates <- function(start_date,
                                  ".OBSERVED_INTERVENTION.timeseries.json?apiKey=",
                                  api_key)
   data <- jsonlite::fromJSON(data_location_string)$timeseries
-  
+
   if (region == "USA") {
     bind_rows(data) %>%
       group_by(date) %>%
       summarise(across(.fns = sum)) -> data
   }
-  
+
   if (prop_hospitalized == "calculate") {
     data %>%
       mutate(
         prop_hospitalized = hospitalBedsRequired / currentInfected,
         deaths = lead(cumulativeDeaths, 1) - cumulativeDeaths,
-        recoveries = currentInfected + lead(cumulativeInfected, 1) - 
+        recoveries = currentInfected + lead(cumulativeInfected, 1) -
           cumulativeInfected - lead(currentInfected, 1) - deaths,
         date = lubridate::as_date(date)
       ) -> data
@@ -69,9 +69,9 @@ read_epi_can_fordates <- function(start_date,
     data %>%
       mutate(
         discharges = round(prop_hospitalized*recoveries),
-        admissions = lead(hospitalBedsRequired, 1) - hospitalBedsRequired + 
+        admissions = lead(hospitalBedsRequired, 1) - hospitalBedsRequired +
           discharges + deaths,
-        icu_admissions = round(admissions*prop_direct_icu) + 
+        icu_admissions = round(admissions*prop_direct_icu) +
           ifelse(!is.na(lag(admissions, delay_step_up)), round(prop_stepped_up_icu*lag(admissions, delay_step_up)), 0) #BASED ON ALTON'S DATA 07/04/20
       ) %>%
       filter(date >= start_date,
@@ -85,7 +85,7 @@ read_epi_can_fordates <- function(start_date,
       mutate(
         prop_hospitalized = hospitalBedsRequired / currentInfected,
         deaths = lead(cumulativeDeaths, 1) - cumulativeDeaths,
-        recoveries = currentInfected + lead(cumulativeInfected, 1) - 
+        recoveries = currentInfected + lead(cumulativeInfected, 1) -
           cumulativeInfected - lead(currentInfected, 1) - deaths,
         date = lubridate::as_date(date)
       ) -> data
@@ -95,9 +95,9 @@ read_epi_can_fordates <- function(start_date,
     data %>%
       mutate(
         discharges = round(prop_hospitalized*recoveries),
-        admissions = lead(hospitalBedsRequired, 1) - hospitalBedsRequired + 
+        admissions = lead(hospitalBedsRequired, 1) - hospitalBedsRequired +
           discharges + deaths,
-        icu_admissions = round(admissions*prop_direct_icu) + 
+        icu_admissions = round(admissions*prop_direct_icu) +
           ifelse(!is.na(lag(admissions, delay_step_up)), round(prop_stepped_up_icu*lag(admissions, delay_step_up)), 0) #BASED ON ALTON'S DATA 07/04/20
       ) %>%
       filter(date >= start_date,
@@ -134,7 +134,7 @@ lookup_region_name <- function(code) {
   return(lookup_table[lookup_table[,1]==code][2])
 }
 
-read_epi_maxdate <- function(region = "CA", 
+read_epi_maxdate <- function(region = "CA",
                               pathprefix = "./data") {
   #browser()
   region_name <- lookup_region_name(region)
@@ -147,9 +147,9 @@ read_epi_maxdate <- function(region = "CA",
 }
 
 
-read_epi_ihme_fordates <- function(start_date, 
-                                   end_date, 
-                                   region = "CA", 
+read_epi_ihme_fordates <- function(start_date,
+                                   end_date,
+                                   region = "CA",
                                    pathprefix = "./data") {
   #browser()
   region_name <- lookup_region_name(region)
@@ -178,7 +178,7 @@ select_columns_ihme <- function(data,
     data %>%
       rename(admissions = admissions_upper) -> data
   }
-  
+
   if (icu_admissions == "mean") {
     data %>%
       rename(icu_admissions = icu_admissions_mean) -> data
@@ -189,14 +189,14 @@ select_columns_ihme <- function(data,
     data %>%
       rename(icu_admissions = icu_admissions_upper) -> data
   }
-  
+
   data %>%
     select(date, t, discharges, admissions, icu_admissions) %>%
     arrange(date) %>%
     return()
 }
 
-ma <- function(x, 
+ma <- function(x,
                n = 7,
                sides = 1) {
   return(stats::filter(x, rep(1 / n, n), sides = sides))

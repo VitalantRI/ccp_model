@@ -1,4 +1,4 @@
-# Copyright 2020 Vitalant and W. Alton Russell
+# Copyright 2020-2021 Vitalant and W. Alton Russell
 # Authors: Eduard Grebe, W. Alton Russell, Brian Custer
 #
 # This program is free software: you can redistribute it and/or modify
@@ -47,26 +47,26 @@ body <- dashboardBody(
                          start = lubridate::ymd("2020-03-15"),
                          end = lubridate::today() + lubridate::days(89),
                          min = lubridate::ymd("2020-02-01"),
-                         format = "yyyy-mm-dd", 
-                         startview = "month", 
+                         format = "yyyy-mm-dd",
+                         startview = "month",
                          weekstart = 0,
                          language = "en", width = NULL, autoclose = TRUE
                        ),
                        bsTooltip("sim_dates", "Starting the simulation before donor recruitment starts will allow recruitment of potential CCP donors who were discharged from hospital before donor recruitment began.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL),
-                       dateInput("recruitment_start_date", label = "CCP donor recruitment start:", 
-                                 value = lubridate::ymd("2020-04-01"), 
+                       dateInput("recruitment_start_date", label = "CCP donor recruitment start:",
+                                 value = lubridate::ymd("2020-04-01"),
                                  min = lubridate::ymd("2020-03-15"), max = lubridate::today() + lubridate::days(89),
                                  format = "yyyy-mm-dd", startview = "month", weekstart = 0,
                                  language = "en", width = NULL, autoclose = TRUE,
                                  datesdisabled = NULL, daysofweekdisabled = NULL),
-                       bsTooltip("recruitment_start_date", 
+                       bsTooltip("recruitment_start_date",
                                  "Set donor recruitment start earlier than CCP collection start if donors should be recruited and scheduled before collections began.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL),
-                       dateInput("collection_start_date", label = "CCP collection start:", 
-                                 value = lubridate::ymd("2020-04-01"), 
+                       dateInput("collection_start_date", label = "CCP collection start:",
+                                 value = lubridate::ymd("2020-04-01"),
                                  min = lubridate::ymd("2020-04-01"), max = lubridate::today() + lubridate::days(89),
                                  format = "yyyy-mm-dd", startview = "month", weekstart = 0,
                                  language = "en", width = NULL, autoclose = TRUE,
@@ -79,7 +79,7 @@ body <- dashboardBody(
                          max = 48,
                          step = 1
                        ),
-                       bsTooltip("n_simulations", 
+                       bsTooltip("n_simulations",
                                  "Running more simulations increases the stability and reliability of results but slows computation. We suggest keeping this at 1 when experimenting with the tool so results generate more quickly, but increasing to >10 when more robust results are needed.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL),
@@ -105,7 +105,7 @@ body <- dashboardBody(
                          ),
                          selected = "sim_all"
                        ),
-                       bsTooltip("historical_collections", 
+                       bsTooltip("historical_collections",
                                  "If you wish to upload your organization’s collections data, select ‘Upload collections data’.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL),
@@ -148,7 +148,7 @@ body <- dashboardBody(
                          ),
                        ),
                        checkboxInput("limit_collection_growth", "Limit collection growth", value = FALSE, width = NULL),
-                       bsTooltip("limit_collection_growth", 
+                       bsTooltip("limit_collection_growth",
                                  "If you are uploading historical data, you may wish to enforce a limit on day-over-day collection growth to avoid a ‘jump’ in collections when switching over to simulated collections.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL),
@@ -171,7 +171,7 @@ body <- dashboardBody(
                          value = 100,
                          step = 10
                        ),
-                       bsTooltip("sim_reduced_perc", 
+                       bsTooltip("sim_reduced_perc",
                                  "Scaling down the number of agents can decrease the time it takes to run each simulation. We recommend setting this below 100% if you are simulating a large epidemic and the tool is updating too slowly.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL),
@@ -186,7 +186,7 @@ body <- dashboardBody(
                        sliderInput("perc_Ab_release", "Percentage of donors meeting SARS-CoV-2 Ab release criterion",  min = 0, max = 100, value = 75, step = 1)
                      )
               ),
-              
+
               column(width = 3,
                      box(
                        title = "Recruitment", width = NULL, solidHeader = TRUE, status = "primary",
@@ -206,7 +206,7 @@ body <- dashboardBody(
                          value = 100,
                          step = 5
                        ),
-                       bsTooltip("perc_eligible", 
+                       bsTooltip("perc_eligible",
                                  "Set to a number less than 100% if some recovered individuals do not meet eligibility criteria.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL),
@@ -234,7 +234,7 @@ body <- dashboardBody(
                          max = 60,
                          step = 1
                        ),
-                       bsTooltip("period_temp_ineligible", 
+                       bsTooltip("period_temp_ineligible",
                                  "The U.S. FDA allows CCP donors to return as soon as 7 days after their last donation, but blood centers may have different policies.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL),
@@ -254,7 +254,7 @@ body <- dashboardBody(
                          value = 86,
                          step = 1
                        ),
-                       bsTooltip("male_relative_propensity_perc", 
+                       bsTooltip("male_relative_propensity_perc",
                                  "At Vitalant, we observed that women were more likely to present for first-time CCP donation. Set this to a number less than 100% to reflect a decrease in likelihood of donating for men.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL),
@@ -266,7 +266,7 @@ body <- dashboardBody(
                          max = 365,
                          step = 1
                        ),
-                       bsTooltip("duration_eligibility", 
+                       bsTooltip("duration_eligibility",
                                  "Once this many days since recovery is reached, donors will be made ineligble. This is less important for analyses with shorter time horizons.",
                                  placement = "bottom", trigger = "hover",
                                  options = NULL)
@@ -363,7 +363,7 @@ body <- dashboardBody(
                        numericInput("doses_per_patient_icu","CCP units/critical care patient:", min = 0, max = 5, value = 1, step = 0.1),
                        sliderInput("demand_lag","Demand lag (admission to administration):", min = 0, max = 21, value = 2, step = 1)
                      )
-                     
+
               ),
               column(width = 3,
                      box(
@@ -544,7 +544,7 @@ body <- dashboardBody(
                    sliderInput("percent_stepped_up_icu","Percentage of hospitalizations stepped up to ICU:", min = 0, max = 50, value = 12, step = 0.5),
                    sliderInput("delay_admission_icu","Average time to ICU step-up:", min = 0, max = 25, value = 2, step = 1)
                  ),
-                 
+
                  conditionalPanel(
                    condition = "input.epidemic_est_type == 'ihme'",
                    radioButtons("hosp_est_type",
@@ -572,14 +572,14 @@ body <- dashboardBody(
                    condition = "input.epidemic_est_type == 'file'",
                    p("Your file must contain the following columns: 'date',
                    'discharges' (number of cases discharged from hospital care,
-                   'admissions' (number of new admissions to acute care) and 
+                   'admissions' (number of new admissions to acute care) and
                    'icu_admissions' (number of new admissions to critical care)."),
                    fileInput("epidemic_est_input_file", "Choose CSV File",
                              multiple = FALSE,
                              accept = c("text/csv",
                                         "text/comma-separated-values,text/plain",
                                         ".csv"))
-                   
+
                  )
                )
         ),
@@ -610,8 +610,8 @@ body <- dashboardBody(
                  plotOutput("icu_admissions_plot", height = "220px")
                )
         )
-        
-        
+
+
       )
     ),
     tabItem(
@@ -656,16 +656,16 @@ body <- dashboardBody(
           width = 3,
           fluidRow(
             valueBox(
-              uiOutput("collection_capacity_procedures"), "MAX COLLECTION PROCEDURES/DAY", 
-              icon = icon("line-chart"), 
+              uiOutput("collection_capacity_procedures"), "MAX COLLECTION PROCEDURES/DAY",
+              icon = icon("line-chart"),
               color = "green",
               width = 12
-            )  
+            )
           ),
           fluidRow(
             valueBox(
-              uiOutput("collection_capacity_units"), "MAX UNITS COLLECTED/DAY", 
-              icon = icon("line-chart"), 
+              uiOutput("collection_capacity_units"), "MAX UNITS COLLECTED/DAY",
+              icon = icon("line-chart"),
               color = "purple",
               width = 12
             )
@@ -781,11 +781,11 @@ body <- dashboardBody(
                          condition = "input.scenario_variable == 'demand_lag'",
                          sliderInput("s_demand_lag","Demand lag (admission to administration):", min = 0, max = 21, value = 2, step = 1)
                        ),
-                       div(actionButton("add_scenario", "Add scenario"), 
+                       div(actionButton("add_scenario", "Add scenario"),
                            actionButton("clear_scenarios", "Clear scenarios"),
                            align = "center"),
                      )
-                     
+
               ),
               column(width = 7,
                      box(
@@ -825,35 +825,35 @@ body <- dashboardBody(
         column(width = 12,
                box(
                  title = "About this tool", width = NULL, solidHeader = TRUE, status = "warning",
-                 p("This tool was developed by researchers at Vitalant Research 
-                   Institute to model COVID-19 Convalescent Plasama collection 
+                 p("This tool was developed by researchers at Vitalant Research
+                   Institute to model COVID-19 Convalescent Plasama collection
                    and distribution to inform policy and operations."),
-                 p("The model has two main components, an agent-based 
-                   microsimulation used to simulate the donor recruitment and 
-                   collection process, and a linked production and demand model 
-                   to project CCP release, distribution and inventory. The model 
-                   utilizes estimates and projections of COVID-19 patients 
-                   discharged from hospital supplied by an external epidemic 
-                   model to create agents that can be recruited as CCP donors. 
-                   New hospital admissions from the same epidemic model are used 
+                 p("The model has two main components, an agent-based
+                   microsimulation used to simulate the donor recruitment and
+                   collection process, and a linked production and demand model
+                   to project CCP release, distribution and inventory. The model
+                   utilizes estimates and projections of COVID-19 patients
+                   discharged from hospital supplied by an external epidemic
+                   model to create agents that can be recruited as CCP donors.
+                   New hospital admissions from the same epidemic model are used
                    to inform the CCP demand model."),
                  h3("Model structure"),
                  p("The structure of the microsimulation model is shown in the figure below."),
                  div(img(src="model_diagram.png", height = "300px"), style="text-align: center;"),
-                 p("The production and demand model applies multipliers to the 
-                   output of the microsimulation model to project the number of 
+                 p("The production and demand model applies multipliers to the
+                   output of the microsimulation model to project the number of
                    CCP units utilized and stockpiled over time."),
                  h3("Authors"),
                  tags$ul(
-                   tags$li(a("Eduard Grebe", href="mailto:EGrebe@vitalant.org"), " (Vitalant Research Institute, University of California San Francisco)"), 
-                   tags$li(a("W. Alton Russell", href="mailto:altonr@stanford.edu"), " (Stanford University, Vitalant Research Institute)"), 
+                   tags$li(a("Eduard Grebe", href="mailto:EGrebe@vitalant.org"), " (Vitalant Research Institute, University of California San Francisco)"),
+                   tags$li(a("W. Alton Russell", href="mailto:altonr@stanford.edu"), " (Stanford University, Vitalant Research Institute)"),
                    tags$li(a("Brian Custer", href="mailto:BCuster@vitalant.org"), " (Vitalant Research Institute, University of California San Francisco)")
                  ),
                  h3("Acknowledgements"),
                  p("The authors thank the following individuals for information on CCP operations and advice on model development:"),
                  tags$ul(
-                   tags$li("Larry J. Dumont (Vitalant Research Institute, Geisel School of Medicine at Dartmouth, University of Colorado School of Medicine)"), 
-                   tags$li("Ralph R. Vassallo (Vitalant, University of New Mexico School of Medicine)"), 
+                   tags$li("Larry J. Dumont (Vitalant Research Institute, Geisel School of Medicine at Dartmouth, University of Colorado School of Medicine)"),
+                   tags$li("Ralph R. Vassallo (Vitalant, University of New Mexico School of Medicine)"),
                    tags$li("Cliff Numark (Vitalant)"),
                    tags$li("Travis Glanzer (Vitalant)"),
                    tags$li("Paula Villalobos-Jimenez (Vitalant)"),
@@ -864,8 +864,8 @@ body <- dashboardBody(
                    tags$li("Candelaria Acosta (Vitalant)")
                  ),
                  p("The authors further thank ", a("Nathan Geffen", href = "https://www.simhub.online/nathan/", target="_blank"), "for technical advice and acknowledge taking direct inspiration from his Python microsimulation code, and Andrea Stone for legal advice."),
-                 em("This software is made possible by numerous open source projects, including the ", 
-                    a("R", href = "https://www.r-project.org", target="_blank"), 
+                 em("This software is made possible by numerous open source projects, including the ",
+                    a("R", href = "https://www.r-project.org", target="_blank"),
                     " and ",
                     a("Python", href = "https://www.python.org", target="_blank"),
                     " programming languages, the ",
@@ -885,8 +885,8 @@ body <- dashboardBody(
                    tags$li("Grebe E, Russell WA, Custer B. Forecasting COVID-19 convalescent plasma supply and demand: A microsimulation model and web-based modeling tool. Forthcoming.")
                  ),
                  h3("Epidemic estimates"),
-                 p("Epidemic estimates are sourced from the ", 
-                   a("Institute for Health Metrics and Evaluation", href="http://www.healthdata.org", target="_blank"), 
+                 p("Epidemic estimates are sourced from the ",
+                   a("Institute for Health Metrics and Evaluation", href="http://www.healthdata.org", target="_blank"),
                    "at the University of Washington and are reproduced under the terms of the ",
                    a("Creative Commons Attribution-NonCommercial 4.0 International License.", href="https://creativecommons.org/licenses/by-nc/4.0/", target="_blank")
                  ),
@@ -900,7 +900,7 @@ body <- dashboardBody(
                  br(),br(),
                  div(img(src="VRI_logo.png", height = "150px"), style="text-align: center;"),
                  br(),
-                 div(img(src="UCSF_logo.png", height = "100px", style="padding-right: 50px;"), 
+                 div(img(src="UCSF_logo.png", height = "100px", style="padding-right: 50px;"),
                      img(src="Stanford_logo.png", height = "125px"),
                      style="text-align: center;"),
                )
